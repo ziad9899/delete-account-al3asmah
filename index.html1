@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلب حذف الحساب وبيانات المستخدم - تطبيق العاصمة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.8;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #e74c3c;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .header .app-name {
+            color: #e74c3c;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .warning-banner {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .warning-banner .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .warning-banner h2 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .intro {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 5px solid #e74c3c;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        .required {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+
+        .optional {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            direction: rtl;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .important-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-right: 4px solid #f39c12;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .important-note .icon {
+            color: #f39c12;
+            font-size: 1.3em;
+            margin-left: 10px;
+        }
+
+        .important-note h3 {
+            color: #d68910;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .contact-info a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-info a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #e74c3c;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            display: none;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>طلب حذف الحساب وبيانات المستخدم</h1>
+            <div class="app-name">تطبيق العاصمة</div>
+        </div>
+
+        <div class="warning-banner">
+            <div class="icon">⚠️</div>
+            <h2>تحذير مهم</h2>
+            <p>حذف الحساب عملية غير قابلة للإلغاء وسيتم حذف جميع بياناتك نهائياً</p>
+        </div>
+
+        <div class="intro">
+            نحن نهتم بخصوصيتك. يمكنك من هنا طلب حذف حسابك وجميع بياناتك المرتبطة بتطبيق العاصمة. يرجى ملء النموذج أدناه وسنعمل على حذف حسابك خلال 7 أيام عمل.
+        </div>
+
+        <div class="form-container">
+            <form id="deleteAccountForm">
+                <div class="form-group">
+                    <label for="fullName">
+                        الاسم الكامل
+                        <span class="optional">(اختياري)</span>
+                    </label>
+                    <input type="text" id="fullName" name="fullName" placeholder="أدخل اسمك الكامل">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <span class="required">*</span>
+                        البريد الإلكتروني
+                    </label>
+                    <input type="email" id="email" name="email" required placeholder="أدخل بريدك الإلكتروني المسجل في التطبيق">
+                </div>
+
+                <div class="form-group">
+                    <label for="userId">
+                        رقم المعرف المستخدم في التطبيق
+                        <span class="optional">(اختياري)</span>
+                    </label>
+                    <input type="text" id="userId" name="userId" placeholder="أدخل رقم المعرف إذا كان متوفراً">
+                </div>
+
+                <div class="form-group">
+                    <label for="reason">
+                        سبب طلب الحذف
+                        <span class="optional">(اختياري)</span>
+                    </label>
+                    <select id="reason" name="reason">
+                        <option value="">اختر السبب</option>
+                        <option value="لم أعد أستخدم التطبيق">لم أعد أستخدم التطبيق</option>
+                        <option value="مخاوف الخصوصية">مخاوف الخصوصية</option>
+                        <option value="تجربة سيئة مع التطبيق">تجربة سيئة مع التطبيق</option>
+                        <option value="وجدت بديل أفضل">وجدت بديل أفضل</option>
+                        <option value="أخرى">أخرى</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalInfo">
+                        معلومات إضافية
+                        <span class="optional">(اختياري)</span>
+                    </label>
+                    <textarea id="additionalInfo" name="additionalInfo" placeholder="أي معلومات إضافية تود إضافتها"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    إرسال طلب الحذف
+                </button>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>جاري إرسال الطلب...</p>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    <h3>✅ تم إرسال طلبك بنجاح!</h3>
+                    <p>سيتم حذف حسابك وبياناتك خلال 7 أيام عمل. شكراً لاستخدامك تطبيق العاصمة.</p>
+                </div>
+
+                <div class="error-message" id="errorMessage">
+                    <h3>❌ حدث خطأ في الإرسال</h3>
+                    <p>يرجى المحاولة مرة أخرى أو التواصل معنا مباشرة.</p>
+                </div>
+            </form>
+        </div>
+
+        <div class="important-note">
+            <h3>
+                <span class="icon">⏰</span>
+                ملاحظة مهمة
+            </h3>
+            <p>
+                <strong>سيتم حذف الحساب والبيانات المرتبطة به خلال 7 أيام عمل.</strong>
+                إذا واجهت أي مشكلة، يرجى التواصل معنا عبر البريد: 
+                <strong>al3asmah2030@gmail.com</strong>
+            </p>
+        </div>
+
+        <div class="contact-info">
+            <h3>هل تحتاج مساعدة؟</h3>
+            <p>
+                يمكنك التواصل معنا عبر: 
+                <a href="mailto:al3asmah2030@gmail.com">al3asmah2030@gmail.com</a>
+                أو هاتف: <strong>0531988876</strong>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('deleteAccountForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // إخفاء الرسائل السابقة
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // إظهار حالة التحميل
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+            
+            // جمع بيانات النموذج
+            const formData = new FormData(this);
+            const email = formData.get('email');
+            
+            if (!email) {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+                errorMessage.style.display = 'block';
+                errorMessage.innerHTML = '<h3>❌ خطأ</h3><p>يرجى إدخال البريد الإلكتروني</p>';
+                return;
+            }
+            
+            // إعداد بيانات الإرسال للإيميل
+            const emailData = {
+                fullName: formData.get('fullName') || 'غير محدد',
+                email: email,
+                userId: formData.get('userId') || 'غير محدد',
+                reason: formData.get('reason') || 'غير محدد',
+                additionalInfo: formData.get('additionalInfo') || 'لا توجد معلومات إضافية',
+                timestamp: new Date().toLocaleString('ar-SA')
+            };
+            
+            // محاكاة إرسال البيانات (يمكن استبدالها بـ API حقيقي)
+            setTimeout(() => {
+                try {
+                    // هنا يمكن إضافة كود الإرسال الفعلي إلى الخادم أو Google Forms
+                    // مثال: إرسال عبر البريد الإلكتروني
+                    const subject = encodeURIComponent('طلب حذف حساب - تطبيق العاصمة');
+                    const body = encodeURIComponent(`
+طلب حذف حساب جديد:
+
+الاسم: ${emailData.fullName}
+البريد الإلكتروني: ${emailData.email}
+رقم المعرف: ${emailData.userId}
+سبب الحذف: ${emailData.reason}
+معلومات إضافية: ${emailData.additionalInfo}
+وقت الطلب: ${emailData.timestamp}
+
+يرجى حذف هذا الحساب والبيانات المرتبطة به خلال 7 أيام عمل.
+                    `);
+                    
+                    // فتح تطبيق البريد الإلكتروني للإرسال
+                    window.location.href = `mailto:al3asmah2030@gmail.com?subject=${subject}&body=${body}`;
+                    
+                    loading.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('deleteAccountForm').reset();
+                    
+                } catch (error) {
+                    loading.style.display = 'none';
+                    submitBtn.disabled = false;
+                    errorMessage.style.display = 'block';
+                }
+            }, 2000);
+        });
+
+        // التحقق من صحة البريد الإلكتروني أثناء الكتابة
+        document.getElementById('email').addEventListener('input', function() {
+            const email = this.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                this.style.borderColor = '#e74c3c';
+            } else {
+                this.style.borderColor = '#e9ecef';
+            }
+        });
+    </script>
+</body>
+</html>
